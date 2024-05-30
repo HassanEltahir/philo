@@ -39,8 +39,10 @@ typedef struct s_philo
 	int				num_of_philos;
 	int				num_times_to_eat;
 	int				*dead;
-	pthread_mutex_t	*r_fork;
-	pthread_mutex_t	*l_fork;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	int l_fork;
+	int r_fork;
 	pthread_mutex_t	*write_lock;
 	pthread_mutex_t	*dead_lock;
 	pthread_mutex_t	*meal_lock;
