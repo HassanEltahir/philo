@@ -14,17 +14,17 @@
 #include <pthread.h>
 
 #define DEBUG_MODE 0 // or false, depending on your debug setting
-#define GRN "0\33[32m"
-#define BLU "0\33[34m"
-#define MAG "0\33[35m"
+#define GRN "\33[32m"
+#define BLU "\33[34m"
+#define MAG "\33[35m"
 #define W   "\033[0;37m"
 #define YEL "\033[0;33m"
 #define RED "\033[0;31m"
-#define PHILO_MAX 100 
+#define RST "\033[0m"
+#define PHILO_MAX 200 
 typedef struct s_table t_table;
 typedef struct s_philo philo;
 typedef pthread_mutex_t t_mtx;
-
 typedef struct s_philo
 {
 	pthread_t		thread;
@@ -35,18 +35,25 @@ typedef struct s_philo
 	size_t			time_to_die;
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
-	size_t			start_time;
+	long			start_time;
 	int				num_of_philos;
 	int				num_times_to_eat;
 	int				*dead;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	int l_fork;
-	int r_fork;
+	pthread_mutex_t	*r_fork;
+	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*write_lock;
 	pthread_mutex_t	*dead_lock;
 	pthread_mutex_t	*meal_lock;
 }					t_philo;
+
+typedef enum s_status
+{
+	EATING,
+	SLEEPING,
+	THINKING,
+	DEAD
+} t_status;
+
 typedef struct s_program
 {
 	int				dead_flag;
@@ -55,6 +62,7 @@ typedef struct s_program
 	pthread_mutex_t	write_lock;
 	t_philo			*philos;
 }					t_program;
+
 void	parse_input(t_philo *philo, char **av);
 void data_init(t_philo *philos);
 int	ft_usleep(size_t milliseconds);

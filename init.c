@@ -51,15 +51,15 @@ void	init_philos(t_philo *philos, t_program *program, pthread_mutex_t *forks,
 		philos[i].dead_lock = &program->dead_lock;
 		philos[i].meal_lock = &program->meal_lock;
 		philos[i].dead = &program->dead_flag;
-		philos[i].left_fork = &forks[i];
-		philos[i].l_fork = 0;
+		philos[i].l_fork = &forks[i];
+		// philos[i].l_fork = 0;
 		philos[i].r_fork = 0;
 		if (i == 0)
         {
-			philos[i].right_fork = &forks[philos[i].num_of_philos - 1];
+			philos[i].r_fork = &forks[philos[i].num_of_philos - 1];
         }
 		else
-			philos[i].right_fork = &forks[i - 1];
+			philos[i].r_fork = &forks[i - 1];
 		i++;
 	}
 }

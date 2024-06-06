@@ -7,6 +7,8 @@ int main(int ac,char **av)
 
         if (ac == 5 || ac == 6)
         {
+            if (atoi(av[1]) > 200)
+                return (1);
             parse_input(philos,av);
             init_program(&program,philos);
             init_forks(forks,philos->num_of_philos);
