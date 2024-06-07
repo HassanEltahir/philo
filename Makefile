@@ -12,7 +12,7 @@ SRCS = 	main.c\
 		monitor.c \
 
 $(NAME) :
-	gcc $(CFLAGS) $(SRCS) -o $(NAME) -lpthread
+	gcc $(CFLAGS) $(SRCS) -o $(NAME) -pthread
 
 all : $(NAME)
 
