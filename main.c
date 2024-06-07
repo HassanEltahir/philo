@@ -5,8 +5,9 @@ void thread_join(t_program *program, t_philo *philos)
     int i;
 
     i = 0;
-    while (i < philos[0].num_of_philos)
+    while (i < philos[0].num_of_philos && check_if_dead(philos) == 0 && check_if_all_ate(philos) == 0)
     {
+        printf("joining thread %d\n", i);
         pthread_join(program->philos[i].thread, NULL);
         i++;
     }
@@ -31,8 +32,12 @@ int main(int ac,char **av)
             while(1)
             {
                 if(check_if_dead(philos) == 1 || check_if_all_ate(philos) == 1)
-                break;
+                {
+                    // return ;
+                    break;
+                }
             }    
+
             thread_join(&program, philos);
         }
         else

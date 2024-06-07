@@ -51,6 +51,8 @@ typedef enum s_status
 	EATING,
 	SLEEPING,
 	THINKING,
+	L_FORK,
+	R_FORK,
 	DEAD
 } t_status;
 

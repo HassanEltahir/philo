@@ -22,6 +22,14 @@
     void    print_status(t_philo *philo, t_status status)
     {
         pthread_mutex_lock(philo->write_lock);
+        if(status == L_FORK)
+        {
+            printf(YEL"%ld %d has taken a fork\n" RST, get_current_time() - philo->start_time, philo->id);
+        }
+        if(status == R_FORK)
+        {
+            printf(MAG"%ld %d has taken a fork\n" RST, get_current_time() - philo->start_time, philo->id);
+        }
         if (status == EATING)
             printf(GRN "%ld %d is eating\n" RST, get_current_time() - philo->start_time, philo->id);
         else if (status == SLEEPING)
@@ -47,12 +55,16 @@ void eat(t_philo *philo)
     if (philo->id % 2 == 0)
     {
         pthread_mutex_lock(philo->r_fork);
+        print_status(philo, R_FORK);
         pthread_mutex_lock(philo->l_fork);
+        print_status(philo, L_FORK);
     }
     else
     {
         pthread_mutex_lock(philo->l_fork);
+        print_status(philo, L_FORK);
         pthread_mutex_lock(philo->r_fork);
+        print_status(philo, R_FORK);
     }
     print_status(philo, EATING);
     philo->last_meal = get_current_time();
