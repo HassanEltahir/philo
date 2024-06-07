@@ -72,3 +72,4 @@ void	init_program(t_program *program, t_philo *philos);
 void	init_philos(t_philo *philos, t_program *program, pthread_mutex_t *forks,
 		char **argv);
 long get_current_time(void);
+// void	destory_all(NULL, &program, forks);
