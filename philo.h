@@ -66,10 +66,15 @@ typedef struct s_program
 void	parse_input(t_philo *philo, char **av);
 void data_init(t_philo *philos);
 int	ft_usleep(size_t milliseconds);
-int thread_create(t_philo *philo);
 void	init_forks(pthread_mutex_t *forks, int philo_num);
 void	init_program(t_program *program, t_philo *philos);
 void	init_philos(t_philo *philos, t_program *program, pthread_mutex_t *forks,
 		char **argv);
 long get_current_time(void);
-// void	destory_all(NULL, &program, forks);
+void destory_all(char *str, t_program *program, pthread_mutex_t *forks);
+int	thread_create(t_program *program, pthread_mutex_t *forks);
+void	*monitor(void *pointer);
+int	check_if_all_ate(t_philo *philos);
+int	check_if_dead(t_philo *philos);
+int	philosopher_dead(t_philo *philo, size_t time_to_die);
+void	print_message(char *str, t_philo *philo, int id);

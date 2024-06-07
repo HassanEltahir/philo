@@ -13,7 +13,9 @@
 
         start_time = get_current_time();
         while (get_current_time() - start_time < milliseconds)
+        {
             usleep(500);
+        }
         return (0);
     }
 
@@ -42,13 +44,8 @@
     }
 void eat(t_philo *philo)
 {
-     if (philo->id % 2 == 0)
-    {
-        ft_usleep(200); // 200 milliseconds
-    }
     if (philo->id % 2 == 0)
     {
-        // usleep(200);
         pthread_mutex_lock(philo->r_fork);
         pthread_mutex_lock(philo->l_fork);
     }
@@ -57,87 +54,49 @@ void eat(t_philo *philo)
         pthread_mutex_lock(philo->l_fork);
         pthread_mutex_lock(philo->r_fork);
     }
-
-    // print_status(philo, "has taken a fork");
     print_status(philo, EATING);
     philo->last_meal = get_current_time();
     philo->meals_eaten++;
+    ft_usleep(philo->time_to_eat);
     pthread_mutex_unlock(philo->l_fork);
     pthread_mutex_unlock(philo->r_fork);
-    ft_usleep(philo->time_to_eat);
 }
-    int dead_loop(t_philo *philos)
+int dead_loop1(t_philo *philo)
+{
+    pthread_mutex_lock(philo->dead_lock);
+    if (*philo->dead == 1)
     {
-        if (philos->num_times_to_eat == 0)
-            return (1);
-        if (philos->time_to_die < get_current_time() - philos->last_meal)
-        {
-            pthread_mutex_lock(philos->dead_lock);
-            *philos->dead = 1;
-            pthread_mutex_unlock(philos->dead_lock);
-            print_status(philos, DEAD);
-            printf("I am dead\n");
-            return (1);
-            exit(1);
-        }
-        return (0);
+        pthread_mutex_unlock(philo->dead_lock);
+        return (1);
     }
+    pthread_mutex_unlock(philo->dead_lock);
+    return (0);
+}
 void	*philo_routine(void *pointer)
 {
-    t_philo	*philo;
+    t_philo *philo;
 
-        philo = (t_philo *)pointer;
-        while (!dead_loop(philo))
-        {
-            if(*philo->dead)
-            {
-                break;
-            }
-            pthread_mutex_lock(philo->meal_lock);
-            if(philo->num_times_to_eat != -1 && philo->meals_eaten >= philo->num_times_to_eat)
-            {
-                pthread_mutex_unlock(philo->meal_lock);
-                break;
-            }
-            pthread_mutex_unlock(philo->meal_lock);
-            eat(philo);
-            if(*philo->dead)
-            {
-                break;
-            }
-            sleeping(philo);
-            thinking(philo);
-            if(*philo->dead)
-            {
-                print_status(philo, DEAD);
-                break;
-            }
-        }   
-        return (NULL);
-}
-    int thread_create(t_philo *philos)
+    philo = (t_philo *)pointer;
+    while (1)
     {
-        pthread_t   *threads;
-        int         i;
-        i = 0;
-
-        while (i < philos->num_of_philos)
-        {
-            pthread_create(&threads[i], NULL, &philo_routine, &philos[i]);
-            i++;
-        }
-        i = 0;
-            while(i < philos->num_of_philos)
-            {
-                if(*philos[i].dead == 1)
-                {
-                    return (0);
-                }
-                pthread_join(threads[i], NULL);
-                i++;
-                return (0);
-
-            }
-            i++;
-        return (0);
+        eat(philo);
+        sleeping(philo);
+        thinking(philo);
     }
+    return (NULL);
+}
+int	thread_create(t_program *program, pthread_mutex_t *forks)
+{
+	int			i;
+
+	i = 0;
+
+	while (i < program->philos[0].num_of_philos)
+	{
+		if (pthread_create(&program->philos[i].thread, NULL, &philo_routine,
+				&program->philos[i]) != 0)
+			destory_all("Thread creation error", program, forks);
+		i++;
+	}
+	return (0);
+}
