@@ -93,6 +93,10 @@ void	*philo_routine(void *pointer)
     {
         eat(philo);
         sleeping(philo);
+       if(philo->id % 2 == 0)
+       {
+        ft_usleep(1);
+       }
         thinking(philo);
     }
     return (NULL);
